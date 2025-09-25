@@ -1,6 +1,6 @@
-// ---------------------------
+
 // Carrito de Compras - Bazar
-// ---------------------------
+
 
 // Clase Producto
 class Producto {
@@ -18,6 +18,7 @@ class ItemCarrito {
     this.cantidad = cantidad;
   }
 
+  //Subtotal del item
   subtotal() {
     return this.producto.precio * this.cantidad;
   }
@@ -29,21 +30,34 @@ class Carrito {
     this.items = [];
   }
 
+  //Agregar un producto al carrito
   agregarProducto(producto, cantidad) {
     let existente = this.items.find(item => item.producto.id === producto.id);
+
+    //Si existe en el carrito, se agrega solo la cantidad
     if (existente) {
       existente.cantidad += cantidad;
-    } else {
+    } 
+
+    //Si no se encuentra crea uno nuevo
+    else {
       this.items.push(new ItemCarrito(producto, cantidad));
     }
+
+    //Mensaje al usuario de que se agrego el producto
     alert(cantidad + ' ' + producto.nombre + '(s) agregado(s) al carrito.');
   }
 
+  //Eliminar un producto al carrito
   eliminarProducto(idProducto, cantidad) {
     let item = this.items.find(item => item.producto.id === idProducto);
+
+    //Si no se encuentra en el carrito da el mensaje que no lo encontro
     if (!item) {
       alert("Producto no encontrado en el carrito.");
     }
+
+    //Si esta en el carrito busca en el array el producto. Si la cantidad es menor al total de unidades, solo disminuye la cantidad. Caso contrario borra todas las cantidades del producto
     else if (cantidad >= item.cantidad) {
       this.items = this.items.filter(i => i.producto.id !== idProducto);
       alert('Se eliminaron todas las unidades de ' + item.producto.nombre + '.');
@@ -53,36 +67,30 @@ class Carrito {
     }
   }
 
+  //Mostrar el detalle del carrito: ID del producto, descripcion, cantidad y subtotal
   mostrarCarrito() {
     console.log("\nTu carrito:");
     if (this.items.length === 0) {
       console.log("Carrito vacío.");
     } else {
-      //this.items.forEach((item, i) => {
-        //console.log(
-          //`${i + 1}. ${item.producto.nombre} x${item.cantidad} - $${item.subtotal()}`
-        //);
-      //});
       for(let i=0; i<this.items.length; i++){
         console.log(this.items[i].producto.id + '. ' + this.items[i].producto.nombre + ' x' + this.items[i].cantidad + ' - $' + this.items[i].subtotal());
       }
       console.log('Total: $' + this.calcularTotal());
     }
   }
-
+  
+  //Calcula el total del carrito
   calcularTotal() {
     return this.items.reduce((acc, item) => acc + item.subtotal(), 0);
   }
 
+  //Genera un ticket al finalizar la compra indicando los productos, subtotales y el total de la compra
   generarTicket() {
     console.log("\n===============================");
     console.log("=============TICKET============");
     console.log("===============================");
-    //this.items.forEach(item => {
-      //console.log(
-        //`${item.producto.nombre} x${item.cantidad} - $${item.subtotal()}`
-      //);
-    //});
+
     for(let i=0; i<this.items.length; i++){
         console.log(this.items[i].producto.nombre + ' x' + this.items[i].cantidad + ' - $' + this.items[i].subtotal());
     }
@@ -92,6 +100,7 @@ class Carrito {
     console.log("¡Gracias por tu compra!");
   }
 
+  //Vacia el carrito
   vaciar() {
     this.items = [];
   }
@@ -110,24 +119,26 @@ class Tienda {
     this.carrito = new Carrito();
   }
 
+  //Muestra en consola los productos disponibles que se encuentra en el array "productos", atributo de la clase Tienda
   mostrarProductos() {
     console.log("PRODUCTOS DISPONIBLES");
-    //this.productos.forEach(p => {
-      //console.log(`${p.id}. ${p.nombre} - $${p.precio}`);
-    //});
+
     for(let i=0; i<this.productos.length; i++){
         console.log(this.productos[i].id + '. ' + this.productos[i].nombre + ' - $' + this.productos[i].precio);
     }
   }
 
+  //Inicia el programa
   iniciar() {
     let continuar = true;
 
     while (continuar) {
+      //Se limpia la consola y se muestran tanto los productos disponibles como el carrito
       console.clear();
       this.mostrarProductos();
       this.carrito.mostrarCarrito();
 
+      //El usuario elige una opcion
       let opcion = prompt(
         "\nSeleccione una opción:\n1. Agregar producto\n2. Eliminar producto\n3. Finalizar compra\n4. Salir"
       );
@@ -153,6 +164,7 @@ class Tienda {
     console.log("Programa finalizado.");
   }
 
+  //Se valida el dato del ID, en caso correcto se activa el metodo agregarProducto de la clase Carrito
   opcionAgregar() {
     let id = parseInt(prompt("Ingrese el ID del producto que desea agregar:"));
 
@@ -174,7 +186,7 @@ class Tienda {
 }      
     
 
-
+  //Se valida el dato ingresado por el usuario y si es correcto se activa el metodo eliminarProducto de la clase Carrito
   opcionEliminar() {
     if (this.carrito.items.length === 0) {
       alert("Tu carrito está vacío.");
@@ -201,7 +213,7 @@ class Tienda {
   }        
 
 
-
+  //Opcion finalizar compra. Genera ticket y se vacia el carrito
   finalizarCompra() {
     console.clear();
     this.carrito.generarTicket(); // ticket en consola
@@ -211,8 +223,7 @@ class Tienda {
   }
 }
 
-// ---------------------------
 // Ejecutar el programa
-// ---------------------------
+
 let tienda = new Tienda();
 tienda.iniciar();
